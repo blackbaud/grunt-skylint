@@ -31,12 +31,10 @@ module.exports = function(grunt) {
     // Configuration to be run (and then tested).
     skylint: {
         options: {
-            linterUrl: 'http://localhost:8080/grunt-skylint/assets/linter.js'
+            linterUrl: 'http://localhost:8080/sky/bin/js/skylint.min.js'
         },
-        all: {
-            files: {
-                src: ['test/fixtures/*.html']
-            }
+        files: {
+            src: ['test/fixtures/*.html']
         }
 //      default_options: {
 //        options: {

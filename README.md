@@ -8,7 +8,7 @@ This plugin requires Grunt `~0.4.5`
 If you haven't used [Grunt](http://gruntjs.com/) before, be sure to check out the [Getting Started](http://gruntjs.com/getting-started) guide, as it explains how to create a [Gruntfile](http://gruntjs.com/sample-gruntfile) as well as install and use Grunt plugins. Once you're familiar with that process, you may install this plugin with this command:
 
 ```shell
-npm install grunt-skylint --save-dev
+npm install git+https://github.com/blackbaud/grunt-skylint --save-dev
 ```
 
 Once the plugin has been installed, it may be enabled inside your Gruntfile with this line of JavaScript:
@@ -37,53 +37,27 @@ grunt.initConfig({
 
 ### Options
 
-#### options.separator
+#### options.linterUrl
 Type: `String`
-Default value: `',  '`
 
-A string value that is used to do something with whatever.
-
-#### options.punctuation
-Type: `String`
-Default value: `'.'`
-
-A string value that is used to do something else with whatever else.
+Required.  The URL to the Skylint file to use to validate your code.  The reason the linter code is not bundled with this Grunt package is so that the linter
+can be upgraded without having to update the Grunt task.
 
 ### Usage Examples
 
-#### Default Options
-In this example, the default options are used to do something with whatever. So if the `testing` file has the content `Testing` and the `123` file had the content `1 2 3`, the generated result would be `Testing, 1 2 3.`
-
-```js
-grunt.initConfig({
-  skylint: {
-    options: {},
-    files: {
-      'dest/default_options': ['src/testing', 'src/123'],
-    },
-  },
-});
-```
-
-#### Custom Options
-In this example, custom options are used to do something else with whatever else. So if the `testing` file has the content `Testing` and the `123` file had the content `1 2 3`, the generated result in this case would be `Testing: 1 2 3 !!!`
+#### Linting all HTML files in a directory
+In this example, all files with an `.html` file extension in the `src` directory will be linted.
 
 ```js
 grunt.initConfig({
   skylint: {
     options: {
-      separator: ': ',
-      punctuation: ' !!!',
+      linterUrl: 'http://localhost:8080/sky/dist/skylint.min.js'
     },
-    files: {
-      'dest/default_options': ['src/testing', 'src/123'],
-    },
+    files: ['src/**/*.html'],
   },
 });
 ```
 
 ## Contributing
 In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [Grunt](http://gruntjs.com/).
-
-## Release History
-_(Nothing yet)_
