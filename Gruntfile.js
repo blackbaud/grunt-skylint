@@ -33,25 +33,11 @@ module.exports = function(grunt) {
         options: {
             linterUrl: 'http://localhost:8080/sky/bin/js/skylint.min.js'
         },
-        files: {
-            src: ['test/fixtures/*.html']
+        test: {
+            files: {
+                src: ['test/fixtures/*.html']
+            }
         }
-//      default_options: {
-//        options: {
-//        },
-//        files: {
-//          'tmp/default_options': ['test/fixtures/testing', 'test/fixtures/123']
-//        }
-//      },
-//      custom_options: {
-//        options: {
-//          separator: ': ',
-//          punctuation: ' !!!'
-//        },
-//        files: {
-//          'tmp/custom_options': ['test/fixtures/testing', 'test/fixtures/123']
-//        }
-//      }
     },
 
     // Unit tests.

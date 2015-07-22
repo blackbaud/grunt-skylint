@@ -91,11 +91,8 @@ module.exports = function (grunt) {
             
             grunt.verbose.writeln('Dependent files downloaded.  Injecting script into host HTML...');
             
-            hostHtml = hostHtml.replace(
-                '//SCRIPT', 
-                'var GRUNT_PKG_VERSION = \'' + version + '\';\n' + js.join('\n')
-            );
-
+            grunt.file.write(asset('tmp/scripts.js'), 'var GRUNT_PKG_VERSION = \'' + version + '\';\n' + js.join('\n'));
+            
             grunt.verbose.writeln('Reading files to lint...');
             
             files.forEach(function (filepath) {
@@ -107,7 +104,7 @@ module.exports = function (grunt) {
                 }
             });
 
-            hostHtml = hostHtml.replace(/<!--HTML-->/gi, contents.join('\n'));
+            hostHtml = hostHtml.replace(/<!--#SKYLINT_HTML-->/gi, contents.join('\n'));
 
             grunt.verbose.writeln('Writing files to lint to tmp file...');
             
@@ -115,15 +112,21 @@ module.exports = function (grunt) {
 
             grunt.verbose.writeln('Launching PhantomJS to lint files...');
             
-            phantomjs.spawn(asset('tmp/host.html'), {
-                done: function (err) {
-                    if (err) {
-                        grunt.verbose.writeln('Error occurred linting files.  ' + err);
+            phantomjs.spawn(
+                asset('tmp/host.html'),
+                {
+                    options: {
+                        inject: asset('tmp/scripts.js')
+                    },
+                    done: function (err) {
+                        if (err) {
+                            grunt.verbose.writeln('Error occurred linting files.  ' + err);
+                        }
+
+                        done(err || errorCount === 0);
                     }
-                    
-                    done(err || errorCount === 0);
                 }
-            });
+            );
         }, function (err) {
             grunt.log.error('Error occurred linting files.  ' + err);
             done(false);
