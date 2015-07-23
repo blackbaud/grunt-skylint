@@ -13,6 +13,7 @@ module.exports = function (grunt) {
     
     var asset,
         errorCount = 0,
+        ignore,
         path = require('path'),
         phantomjs = require('grunt-lib-phantomjs').init(grunt),
         q = require('q'),
@@ -43,6 +44,18 @@ module.exports = function (grunt) {
         ]);
     }
     
+    function isIgnored(err) {
+        if (ignore && typeof ignore[err.code] !== 'undefined') {
+            return true;
+        }
+        
+        return false;
+    }
+    
+    function buildInvalidMessage(err) {
+        return '    ' + err.code + ': ' + err.message;
+    }
+    
     asset = path.join.bind(null, __dirname, '..');
           
     phantomjs.on('skylint.ok', function (msg) {
@@ -56,6 +69,44 @@ module.exports = function (grunt) {
     phantomjs.on('skylint.error', function (msg) {
         errorCount++;
         grunt.log.error(msg);
+    });
+
+    phantomjs.on('skylint.invalid', function (file) {
+        var err,
+            errors,
+            i,
+            invalidCount = 0,
+            msg,
+            n;
+        
+        errors = file.errors;
+        
+        if (errors && errors.length > 0) {
+            for (i = 0, n = errors.length; i < n; i++) {
+                err = errors[i];
+                
+                msg = buildInvalidMessage(err);
+                
+                if (isIgnored(err)) {
+                    if (invalidCount === 0) {
+                        grunt.verbose.subhead(file.path);
+                    }
+                    grunt.verbose.writeln('Ignored validation error was raised. ' + msg);
+                } else {
+                    if (invalidCount === 0) {
+                        grunt.log.subhead(file.path);
+                    }
+                    
+                    errorCount++;
+                    invalidCount++;
+                    grunt.log.writeln(msg);
+                }
+            }
+        }
+        
+        if (invalidCount > 0) {
+            grunt.log.error(invalidCount + ' error(s) found in ' + file.path);
+        }
     });
 
     phantomjs.on('skylint.done', function () {
@@ -78,7 +129,9 @@ module.exports = function (grunt) {
             done = this.async(),
             files = this.filesSrc,
             hostHtml = grunt.file.read(asset('assets/host.html')),
-            options = this.options();
+            options = this.options({
+                ignore: []
+            });
         
         if (!options.linterUrl) {
             grunt.log.error('You must specify a URL to a valid linter file.');
@@ -86,12 +139,14 @@ module.exports = function (grunt) {
             return;
         }
         
+        ignore = options.ignore;
+        
         downloadFiles(options.linterUrl).then(function (js) {
             var version = grunt.file.readJSON(asset('package.json')).version;
             
             grunt.verbose.writeln('Dependent files downloaded.  Injecting script into host HTML...');
             
-            grunt.file.write(asset('tmp/scripts.js'), 'var GRUNT_PKG_VERSION = \'' + version + '\';\n' + js.join('\n'));
+            grunt.file.write(asset('tmp/scripts.js'), 'var REPORTER_VERSION = \'' + version + '\';\n' + js.join('\n'));
             
             grunt.verbose.writeln('Reading files to lint...');
             
