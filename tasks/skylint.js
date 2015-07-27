@@ -45,7 +45,7 @@ module.exports = function (grunt) {
     }
     
     function isIgnored(err) {
-        if (ignore && typeof ignore[err.code] !== 'undefined') {
+        if (ignore && ignore.indexOf(err.code) >= 0) {
             return true;
         }
         
