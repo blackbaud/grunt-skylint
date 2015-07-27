@@ -40,8 +40,9 @@ grunt.initConfig({
 #### options.linterUrl
 Type: `String`
 
-Required.  The URL to the Skylint file to use to validate your code.  The reason the linter code is not bundled with this Grunt package is so that the linter
-can be upgraded without having to update the Grunt task.
+Required.  The URL to the Skylint file to use to validate your code.  While the Grunt task reports on validation errors, the actual validation
+logic takes place in code that is bundled with the Sky distribution.  This allows you to continue to upgrade Sky in your product and have the 
+Grunt task point to the version of Sky that your product is currently on.
 
 ### Usage Examples
 
