@@ -31,7 +31,7 @@ module.exports = function (grunt) {
         // Configuration to be run (and then tested).
         skylint: {
             options: {
-                linterUrl: 'http://localhost:8080/sky/bin/js/skylint.min.js'
+                linterUrl: 'http://localhost:8080/skyux/bin/js/skylint.min.js'
             },
             test: {
                 files: {
@@ -44,7 +44,7 @@ module.exports = function (grunt) {
         nodeunit: {
             tests: ['test/*_test.js']
         },
-        
+
         bump: {
             options: {
                 files: ['package.json'],
