@@ -53,7 +53,7 @@ In this example, all files with an `.html` file extension in the `src` directory
 grunt.initConfig({
   skylint: {
     options: {
-      linterUrl: 'http://localhost:8080/sky/dist/skylint.min.js'
+      linterUrl: 'https://sky.blackbaudcdn.net/skyux/dev/js/skylint.min.js'
     },
     files: ['src/**/*.html'],
   },
